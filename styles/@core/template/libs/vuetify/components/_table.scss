@@ -1,0 +1,86 @@
+// 👉 Table
+.v-table {
+  th {
+    color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)) !important;
+    font-size: 0.8125rem;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+
+    .v-data-table-header__content {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+// 👉 Datatable
+.v-data-table,
+.v-table {
+  table {
+    thead,
+    tbody {
+      tr {
+        th,
+        td {
+          &:first-child:has(.v-checkbox-btn) {
+            padding-inline-start: 13px !important;
+          }
+
+          &:first-child {
+            padding-inline-start: 24px !important;
+          }
+
+          &:last-child {
+            padding-inline-end: 24px !important;
+          }
+        }
+      }
+
+      tr {
+        th {
+          background-color: rgba(var(--v-theme-on-surface), 0.035) !important;
+          border-block-end: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        > td {
+          transition: background-color 0.15s ease;
+        }
+
+        &:hover > td {
+          background-color: rgba(var(--v-theme-primary), 0.075) !important;
+        }
+      }
+
+      .v-data-table-group-header-row {
+        td {
+          background-color: rgb(var(--v-theme-surface));
+        }
+      }
+    }
+  }
+}
+
+.v-theme--dark {
+  .v-data-table,
+  .v-table {
+    table {
+      thead {
+        tr {
+          th {
+            background-color: rgba(var(--v-theme-on-surface), 0.075) !important;
+          }
+        }
+      }
+
+      tbody {
+        tr:hover > td {
+          background-color: rgba(var(--v-theme-primary), 0.14) !important;
+        }
+      }
+    }
+  }
+}

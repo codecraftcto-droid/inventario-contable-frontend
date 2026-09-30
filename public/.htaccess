@@ -1,0 +1,48 @@
+# Configuración para servir la SPA (Vue Router en modo history) desde
+# Apache/cPanel y evitar que el navegador cachee index.html.
+#
+# Sin esto, index.html puede quedar cacheado por el navegador (o por el
+# "Browser Caching" que algunos hostings de cPanel activan por defecto),
+# de modo que tras un nuevo despliegue los usuarios siguen ejecutando el
+# JS/CSS de una build anterior aunque el código ya esté corregido.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # No reescribir archivos ni carpetas que sí existen (assets, imágenes, etc.)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Cualquier otra ruta (las rutas de Vue Router) cae en index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  # HTML (index.html y cualquier otro): nunca servir una copia cacheada sin
+  # revalidar con el servidor, para que un despliegue nuevo se vea de inmediato.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # Resto de estáticos servidos desde /public (logos, favicon, mockServiceWorker.js,
+  # etc.) sin hash de contenido en el nombre: cache moderado, no "immutable".
+  <FilesMatch "\.(js|css|png|jpe?g|gif|svg|webp|ico|woff2?)$">
+    Header set Cache-Control "public, max-age=86400"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  # Solo los archivos dentro de /assets/ los genera Vite con un hash de
+  # contenido en el nombre (p.ej. index-DFuoV-8y.js): si el contenido cambia,
+  # el nombre también cambia, así que sí pueden cachearse de forma agresiva.
+  RewriteRule ^assets/ - [E=LONG_CACHE:1]
+</IfModule>
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable" env=LONG_CACHE
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml
+</IfModule>

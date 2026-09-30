@@ -1,0 +1,17 @@
+// Write your overrides
+.app-select,
+.app-text-field {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.swal2-container {
+  z-index: 10000 !important;
+}
+
+// En español solo va mayúscula la primera letra ("Nuevo usuario", no "Nuevo Usuario").
+.v-btn,
+.v-tab.v-btn {
+  text-transform: none !important;
+}
